@@ -3,157 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Probabilidad Binomial</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.10.0"></script>
+    <title>Calculadora de Distribución Binomial</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            background-color: #f4f4f4;
+            color: #333;
         }
         .container {
             max-width: 600px;
             margin: 50px auto;
-            background-color: #fff;
             padding: 20px;
-            border-radius: 10px;
+            background-color: #fff;
+            border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        h2 {
+        h1 {
             text-align: center;
-            color: #333;
+            color: #007bff;
         }
         p {
             margin-bottom: 20px;
-            color: #555;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
         }
         label {
-            margin-bottom: 10px;
-            color: #333;
+            display: block;
+            margin-bottom: 5px;
         }
         input[type="number"] {
-            padding: 8px;
-            margin-bottom: 20px;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            font-size: 16px;
         }
-        input[type="submit"],
         button {
             padding: 10px 20px;
-            background-color: #4CAF50;
+            background-color: #007bff;
             color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
         }
-        input[type="submit"]:hover,
         button:hover {
-            background-color: #45a049;
+            background-color: #0056b3;
         }
-        #resultado {
+        #resultado_pdf, #resultado_cdf, #resultado_mayor_que_k {
             margin-top: 20px;
-            text-align: center;
-            font-size: 18px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Calculadora de Probabilidad Binomial</h2>
+    <h1>Bienvenido a la Calculadora de Distribución Binomial</h1>
+    <p>Esta calculadora te permite calcular la probabilidad utilizando la Función de Masa de Probabilidad (PDF) y la Función de Distribución Acumulativa (CDF) de una distribución binomial.</p>
 
-    <p>Bienvenido a la Calculadora de Probabilidad Binomial. Por favor, ingresa los siguientes datos y haz clic en "Calcular Probabilidad" para obtener el resultado:</p>
+    <label for="n_ensayos">Número de ensayos (n):</label>
+    <input type="number" id="n_ensayos" value="10">
 
-    <form id="binomialForm">
-        <label for="n_ensayos">Número total de ensayos (n):</label>
-        <input type="number" id="n_ensayos" name="n_ensayos" value="10" min="1" required>
-        
-        <label for="n_exitos_deseados">Número de éxitos deseados (k):</label>
-        <input type="number" id="n_exitos_deseados" name="n_exitos_deseados" value="3" min="0" required>
-        
-        <label for="probabilidad_exito">Probabilidad de éxito en un solo ensayo (p):</label>
-        <input type="number" id="probabilidad_exito" name="probabilidad_exito" value="0.5" min="0" max="1" step="0.01" required>
-        
-        <input type="submit" value="Calcular Probabilidad">
-    </form>
+    <label for="probabilidad_exito">Probabilidad de éxito en cada ensayo (p):</label>
+    <input type="number" id="probabilidad_exito" step="0.01" value="0.3">
 
-    <div id="resultado"></div>
+    <label for="num_exitos_deseados">Número de éxitos deseados (k):</label>
+    <input type="number" id="num_exitos_deseados" value="3">
 
-    <p>Calcula la probabilidad acumulada (menor que) de una distribución binomial:</p>
-    <form id="binomialCdfForm">
-        <label for="valor_deseado">Valor deseado:</label>
-        <input type="number" id="valor_deseado" name="valor_deseado" min="0" required>
-        <button id="calcularCdf">Calcular Probabilidad Acumulada</button>
-    </form>
-    
-    <div id="resultado_cdf"></div>
-    
-    <button id="likeButton">Me gusta</button>
+    <button onclick="calcularProbabilidades()">Calcular Probabilidades</button>
+
+    <p id="resultado_pdf"></p>
+    <p id="resultado_cdf"></p>
+    <p id="resultado_mayor_que_k"></p>
 </div>
 
 <script>
-    document.getElementById("binomialForm").addEventListener("submit", function(event) {
-        event.preventDefault();
-        
-        var n_ensayos = parseInt(document.getElementById("n_ensayos").value);
-        var n_exitos_deseados = parseInt(document.getElementById("n_exitos_deseados").value);
-        var probabilidad_exito = parseFloat(document.getElementById("probabilidad_exito").value);
-        
-        var resultado = calcularProbabilidadBinomial(n_ensayos, n_exitos_deseados, probabilidad_exito);
-        
-        document.getElementById("resultado").innerHTML = "<p>La probabilidad de obtener " + n_exitos_deseados + " éxitos en " + n_ensayos + " ensayos es: " + resultado + "</p>";
-    });
-    
-    function calcularProbabilidadBinomial(n, k, p) {
-        var coeficienteBinomial = calcularCoeficienteBinomial(n, k);
-        var probabilidad = coeficienteBinomial * Math.pow(p, k) * Math.pow(1 - p, n - k);
-        return probabilidad.toFixed(4); // Redondear a 4 decimales
-    }
-    
-    function calcularCoeficienteBinomial(n, k) {
-        return factorial(n) / (factorial(k) * factorial(n - k));
-    }
-    
-    function factorial(num) {
-        if (num === 0 || num === 1)
-            return 1;
-        for (var i = num - 1; i >= 1; i--) {
-            num *= i;
-        }
-        return num;
+    function calcular_pdf_binomial(n, p, k) {
+        return jStat.binomial.pdf(k, n, p);
     }
 
-    document.getElementById("likeButton").addEventListener("click", function() {
-        alert("¡Gracias por tu apoyo! 😊");
-    });
+    function calcular_cdf_binomial(n, p, k) {
+        return jStat.binomial.cdf(k, n, p);
+    }
 
-    document.getElementById("binomialCdfForm").addEventListener("submit", function(event) {
-        event.preventDefault();
+    function calcular_probabilidad_mayor_que_k(n, p, k) {
+        return 1 - jStat.binomial.cdf(k - 1, n, p);
+    }
 
-        var valor_deseado = parseInt(document.getElementById("valor_deseado").value);
-        var n_ensayos = parseInt(document.getElementById("n_ensayos").value);
-        var probabilidad_exito = parseFloat(document.getElementById("probabilidad_exito").value);
+    function calcularProbabilidades() {
+        var n = parseInt(document.getElementById("n_ensayos").value);
+        var p = parseFloat(document.getElementById("probabilidad_exito").value);
+        var k = parseInt(document.getElementById("num_exitos_deseados").value);
 
-        var probabilidad_acumulada = calcularProbabilidadAcumulada(valor_deseado, n_ensayos, probabilidad_exito);
+        var pdf_probabilidad = calcular_pdf_binomial(n, p, k);
+        var cdf_probabilidad = calcular_cdf_binomial(n, p, k);
+        var probabilidad_mayor_que_k = calcular_probabilidad_mayor_que_k(n, p, k);
 
-        document.getElementById("resultado_cdf").innerHTML = "<p>La probabilidad acumulada (menor que " + valor_deseado + ") es: " + probabilidad_acumulada + "</p>";
-    });
-
-    async function calcularProbabilidadAcumulada(valor_deseado, n, p) {
-        const dist = tfd.binomial(n, p);
-        const probabilidad_acumulada = await dist.cdf(valor_deseado).data();
-        return probabilidad_acumulada[0].toFixed(4); // Redondear a 4 decimales
+        document.getElementById("resultado_pdf").innerHTML = "Probabilidad utilizando PDF: " + pdf_probabilidad.toFixed(4);
+        document.getElementById("resultado_cdf").innerHTML = "Probabilidad acumulativa utilizando CDF: " + cdf_probabilidad.toFixed(4);
+        document.getElementById("resultado_mayor_que_k").innerHTML = "Probabilidad de que el número de éxitos sea mayor que " + k + ": " + probabilidad_mayor_que_k.toFixed(4);
     }
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.7.1/jstat.min.js"></script>
 
 </body>
 </html>
