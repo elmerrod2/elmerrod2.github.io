@@ -24,6 +24,10 @@
             text-align: center;
             color: #333;
         }
+        p {
+            margin-bottom: 20px;
+            color: #555;
+        }
         form {
             display: flex;
             flex-direction: column;
@@ -39,7 +43,8 @@
             border-radius: 5px;
             font-size: 16px;
         }
-        input[type="submit"] {
+        input[type="submit"],
+        button {
             padding: 10px 20px;
             background-color: #4CAF50;
             color: #fff;
@@ -49,7 +54,8 @@
             font-size: 16px;
             transition: background-color 0.3s;
         }
-        input[type="submit"]:hover {
+        input[type="submit"]:hover,
+        button:hover {
             background-color: #45a049;
         }
         #resultado {
@@ -63,12 +69,12 @@
 
 <div class="container">
     <h2>Calculadora de Probabilidad Binomial</h2>
-    
+
     <p>Bienvenido a la Calculadora de Probabilidad Binomial. Por favor, ingresa los siguientes datos y haz clic en "Calcular Probabilidad" para obtener el resultado:</p>
-  
+
     <form id="binomialForm">
         <label for="n_ensayos">Número total de ensayos (n):</label>
-        <input type="number" id="n_ensayos" name="n_ensayos" value="20" min="1" required>
+        <input type="number" id="n_ensayos" name="n_ensayos" value="10" min="1" required>
         
         <label for="n_exitos_deseados">Número de éxitos deseados (k):</label>
         <input type="number" id="n_exitos_deseados" name="n_exitos_deseados" value="3" min="0" required>
@@ -80,9 +86,20 @@
     </form>
 
     <div id="resultado"></div>
+
+    <p>Calcula la probabilidad acumulada (menor que) de una distribución binomial:</p>
+    <form id="binomialCdfForm">
+        <label for="valor_deseado">Valor deseado:</label>
+        <input type="number" id="valor_deseado" name="valor_deseado" min="0" required>
+        <button id="calcularCdf">Calcular Probabilidad Acumulada</button>
+    </form>
+    
+    <div id="resultado_cdf"></div>
+    
     <button id="likeButton">Me gusta</button>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 <script>
     document.getElementById("binomialForm").addEventListener("submit", function(event) {
         event.preventDefault();
@@ -118,6 +135,24 @@
     document.getElementById("likeButton").addEventListener("click", function() {
         alert("¡Gracias por tu apoyo! 😊");
     });
+
+    document.getElementById("binomialCdfForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        var valor_deseado = parseInt(document.getElementById("valor_deseado").value);
+        var n_ensayos = parseInt(document.getElementById("n_ensayos").value);
+        var probabilidad_exito = parseFloat(document.getElementById("probabilidad_exito").value);
+
+        var probabilidad_acumulada = calcularProbabilidadAcumulada(valor_deseado, n_ensayos, probabilidad_exito);
+
+        document.getElementById("resultado_cdf").innerHTML = "<p>La probabilidad acumulada (menor que " + valor_deseado + ") es: " + probabilidad_acumulada + "</p>";
+    });
+
+    function calcularProbabilidadAcumulada(valor_deseado, n, p) {
+        const dist = tfd.Binomial(n, p);
+        const probabilidad_acumulada = dist.cdf(valor_deseado).dataSync()[0];
+        return probabilidad_acumulada.toFixed(4); // Redondear a 4 decimales
+    }
 </script>
 
 </body>
