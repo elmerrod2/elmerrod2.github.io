@@ -1,114 +1,62 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Distribución Binomial</title>
+    <title>Productos en venta</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
         }
         .container {
-            max-width: 600px;
-            margin: 50px auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             padding: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        h1 {
+        .product {
+            margin: 20px;
             text-align: center;
-            color: #007bff;
         }
-        p {
-            margin-bottom: 20px;
+        .product img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
         }
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #f200ff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #resultado_pdf, #resultado_cdf, #resultado_mayor_que_k {
-            margin-top: 20px;
+        .product h3 {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h1>Bienvenido a la Calculadora de Distribución Binomial</h1>
-    <p>Esta calculadora te permite calcular la probabilidad utilizando la Función de Masa de Probabilidad (PDF) y la Función de Distribución Acumulativa (CDF) de una distribución binomial.</p>
-
-    <label for="n_ensayos">Número de ensayos (n):</label>
-    <input type="number" id="n_ensayos" value="10">
-
-    <label for="probabilidad_exito">Probabilidad de éxito en cada ensayo (p):</label>
-    <input type="number" id="probabilidad_exito" step="0.01" value="0.3">
-
-    <label for="num_exitos_deseados">Número de éxitos deseados (k):</label>
-    <input type="number" id="num_exitos_deseados" value="3">
-
-    <button onclick="calcularProbabilidades()">Calcular Probabilidades</button>
-
-    <p id="resultado_pdf"></p>
-    <p id="resultado_cdf"></p>
-    <p id="resultado_mayor_que_k"></p>
-</div>
-    
-<div class="footer">
-    <p>Elaborado por Elmer Rodríguez S.</p>
-</div>
-
-<script>
-    function calcular_pdf_binomial(n, p, k) {
-        return jStat.binomial.pdf(k, n, p);
-    }
-
-    function calcular_cdf_binomial(n, p, k) {
-        return jStat.binomial.cdf(k, n, p);
-    }
-
-    function calcular_probabilidad_mayor_que_k(n, p, k) {
-        return 1 - jStat.binomial.cdf(k - 1, n, p);
-    }
-
-    function calcularProbabilidades() {
-        var n = parseInt(document.getElementById("n_ensayos").value);
-        var p = parseFloat(document.getElementById("probabilidad_exito").value);
-        var k = parseInt(document.getElementById("num_exitos_deseados").value);
-
-        var pdf_probabilidad = calcular_pdf_binomial(n, p, k);
-        var cdf_probabilidad = calcular_cdf_binomial(n, p, k);
-        var probabilidad_mayor_que_k = calcular_probabilidad_mayor_que_k(n, p, k);
-
-        document.getElementById("resultado_pdf").innerHTML = "Probabilidad utilizando PDF: " + pdf_probabilidad.toFixed(4);
-        document.getElementById("resultado_cdf").innerHTML = "Probabilidad acumulativa utilizando CDF: " + cdf_probabilidad.toFixed(4);
-        document.getElementById("resultado_mayor_que_k").innerHTML = "Probabilidad de que el número de éxitos sea mayor que " + k + ": " + probabilidad_mayor_que_k.toFixed(4);
-    }
-</script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.7.1/jstat.min.js"></script>
-
+    <header>
+        <h1>Productos en venta</h1>
+    </header>
+    <div class="container">
+        <div class="product">
+            <img src="vaso.jpg" alt="Vaso">
+            <h3>Vaso</h3>
+            <p>$10.99</p>
+        </div>
+        <div class="product">
+            <img src="camiseta.jpg" alt="Camiseta">
+            <h3>Camiseta</h3>
+            <p>$19.99</p>
+        </div>
+        <div class="product">
+            <img src="llavero.jpg" alt="Llavero">
+            <h3>Llavero</h3>
+            <p>$5.99</p>
+        </div>
+    </div>
 </body>
 </html>
