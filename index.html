@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Probabilidad Binomial</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.10.0"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -99,7 +100,6 @@
     <button id="likeButton">Me gusta</button>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 <script>
     document.getElementById("binomialForm").addEventListener("submit", function(event) {
         event.preventDefault();
@@ -148,10 +148,10 @@
         document.getElementById("resultado_cdf").innerHTML = "<p>La probabilidad acumulada (menor que " + valor_deseado + ") es: " + probabilidad_acumulada + "</p>";
     });
 
-    function calcularProbabilidadAcumulada(valor_deseado, n, p) {
-        const dist = tfd.Binomial(n, p);
-        const probabilidad_acumulada = dist.cdf(valor_deseado).dataSync()[0];
-        return probabilidad_acumulada.toFixed(4); // Redondear a 4 decimales
+    async function calcularProbabilidadAcumulada(valor_deseado, n, p) {
+        const dist = tfd.binomial(n, p);
+        const probabilidad_acumulada = await dist.cdf(valor_deseado).data();
+        return probabilidad_acumulada[0].toFixed(4); // Redondear a 4 decimales
     }
 </script>
 
